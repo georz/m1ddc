@@ -31,7 +31,17 @@ CGDisplayCount getOnlineDisplayInfos(DisplayInfos* displayInfos) {
 
         currDisplay->uuid = CFDictionaryGetValue(displayInfos, CFSTR("kCGDisplayUUID"));
         currDisplay->ioLocation = CFDictionaryGetValue(displayInfos, CFSTR("IODisplayLocation"));
-        
+
+        currDisplay->adapter = MACH_PORT_NULL;
+        currDisplay->edid = NULL;
+        currDisplay->productName = NULL;
+        currDisplay->manufacturer = NULL;
+        currDisplay->alphNumSerial = NULL;
+
+        if (currDisplay->ioLocation == NULL) {
+            continue;
+        }
+
         // Retrieving IORegistry entry for display
         currDisplay->adapter = IORegistryEntryCopyFromPath(kIOMainPortDefault, (CFStringRef)currDisplay->ioLocation);
         if (currDisplay->adapter == MACH_PORT_NULL) {
